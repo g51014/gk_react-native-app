@@ -1,3 +1,3 @@
 dependencies: \
-  /Users/itadmin/myapp3/node_modules/react-native/ReactCommon/privatedata/PrivateDataBase.cpp \
-  /Users/itadmin/myapp3/node_modules/react-native/ReactCommon/privatedata/PrivateDataBase.h
+  /Users/itadmin/Documents/GitHub/gk_react-native-app/node_modules/react-native/ReactCommon/privatedata/PrivateDataBase.cpp \
+  /Users/itadmin/Documents/GitHub/gk_react-native-app/node_modules/react-native/ReactCommon/privatedata/PrivateDataBase.h

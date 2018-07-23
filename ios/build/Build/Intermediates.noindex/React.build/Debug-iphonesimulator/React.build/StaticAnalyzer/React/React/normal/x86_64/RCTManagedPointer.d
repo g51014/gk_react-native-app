@@ -1,3 +1,3 @@
 dependencies: \
-  /Users/itadmin/myapp3/node_modules/react-native/React/Base/RCTManagedPointer.mm \
-  /Users/itadmin/myapp3/node_modules/react-native/React/Base/RCTManagedPointer.h
+  /Users/itadmin/Documents/GitHub/gk_react-native-app/node_modules/react-native/React/Base/RCTManagedPointer.mm \
+  /Users/itadmin/Documents/GitHub/gk_react-native-app/node_modules/react-native/React/Base/RCTManagedPointer.h
