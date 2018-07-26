@@ -15,14 +15,14 @@ import CustomerMenu from './Calendar/customerMenu';
 
 export default Navigator = StackNavigator(
   {
-    CustomerMenu:{
-      screen:CustomerMenu
-    },
     Calendar:{
       screen:Calendar,
     },
     AddSchedule:{
       screen:AddSchedule
+    },
+    CustomerMenu:{
+      screen:CustomerMenu
     },
   }
 );

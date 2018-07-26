@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Alert,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -26,7 +27,7 @@ export default class MyComponent extends Component {
       name:[], //當前顯示客戶名稱
       color:[], //當前顯示客戶顏色
       display:[], //當前顯示客戶詳細內容顯示方式
-      index:[], //當前顯示客戶的編號
+      index:[], //當前顯示客戶的編號,indexTemp為目前條件的index備份,除關鍵字查詢外都會與index相同
       key:{type:'所有'}
     };
   }
@@ -62,7 +63,7 @@ export default class MyComponent extends Component {
           index.push(i);
         }
         info = {name:name,address:address,phone:phone,lastDate:lastDate,amount:amount,lastAmount:lastAmount,color:color,type:type,weight:weight};
-        this.setState({info:info,name:info.name,color:info.color,display:display,index:index});
+        this.setState({info:info,name:info.name,color:info.color,display:display,index:index,indexTemp:index});
       })
       .catch((error) =>{
         console.error(error);
@@ -108,7 +109,7 @@ export default class MyComponent extends Component {
         if(type == '顧客') color.push('#01814a');
         else color.push('#01b468');
       }
-      this.setState({name:name,color:color,index:index});
+      this.setState({name:name,color:color,index:index,indexTemp:index});
     }
     else if(type == '所有')
     {
@@ -119,7 +120,7 @@ export default class MyComponent extends Component {
       {
         index.push(i);
       }
-      this.setState({name:name,color:color,index:index});
+      this.setState({name:name,color:color,index:index,indexTemp:index});
     }
     //sort排列
     var name = this.state.name;
@@ -166,7 +167,7 @@ export default class MyComponent extends Component {
           }
         }
       }
-      this.setState({name:temp,color:color,index:index});
+      this.setState({name:temp,color:color,index:index,indexTemp:index});
     }
     else if(sort == '今年業績')
     {
@@ -210,7 +211,7 @@ export default class MyComponent extends Component {
           }
         }
       }
-      this.setState({name:temp,color:color,index:index});
+      this.setState({name:temp,color:color,index:index,indexTemp:index});
     }
     else if(sort == '去年業績')
     {
@@ -254,9 +255,12 @@ export default class MyComponent extends Component {
           }
         }
       }
-      this.setState({name:temp,color:color,index:index});
+      this.setState({name:temp,color:color,index:index,indexTemp:index});
     }
   }
+
+  //簡化數字
+
 
   //顯示細節
   ShowDetail(index)
@@ -273,14 +277,12 @@ export default class MyComponent extends Component {
   //關鍵字搜尋
   Search(input)
   {
+    var indexTemp = this.state.indexTemp;
+    var type = this.state.key.type;
     var key = input.text;
-    var temp =[];
-    for(var i=0;i<this.state.info.name.length;i++)
-    {
-      if(this.state.info.name[i].match(key) != null) temp.push(this.state.info.name[i]);
-    }
-    // console.warn(temp);
-    this.setState({name:temp})
+    var index =[];
+    for(var i=0;i<this.state.indexTemp.length;i++) if(this.state.info.name[this.state.indexTemp[i]].match(key) != null) index.push(this.state.indexTemp[i]);
+    this.setState({index:index})
   }
 
   //設置頂部導航欄的內容
@@ -295,9 +297,17 @@ export default class MyComponent extends Component {
         headerTitleStyle: {fontSize:20,letterSpacing:5,textAlign:'center'},
     });
 
+    //提交
+    Confirm(i)
+    {
+      const {navigate,goBack,state} = this.props.navigation;
+      state.params.callback(i);
+      this.props.navigation.goBack();  
+    }
+
   render() {
     var cards =[];
-    var name = this.state.name;
+    var index = this.state.index;
     let sortOption = [{
       value: '權重',
     }, {
@@ -313,19 +323,22 @@ export default class MyComponent extends Component {
       value: '淺客',
     }];
     //卡片製作
-    for(var i=0;i<name.length;i++)
+    for(var i=0;i<index.length;i++)
     {
       cards.push(
         <TouchableOpacity key={i} onPress={this.ShowDetail.bind(this,i)}>
-          <View style={[,{margin:10,backgroundColor:this.state.color[i]}]}>
-            <Text  style={[Style.font_option,{color:'white',textAlign:'center'}]}>{this.state.name[i]}</Text>
+          <View style={[,{margin:10,backgroundColor:this.state.info.color[index[i]]}]}>
+            <Text  style={[Style.font_option,{color:'white',textAlign:'center'}]}>{this.state.info.name[index[i]]}</Text>
             //details
             <View style={[,{backgroundColor:'white',display:this.state.display[i]}]}>
-              <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'center'}]}>{this.state.info.address[this.state.index[i]]}</Text>
-              <View style={[Style.row,{justifyContent:'flex-start',paddingLeft:20}]}>
-                <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'left',marginRight:10}]}>電話：{this.state.info.phone[this.state.index[i]]}</Text>
-                <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'left'}]}>業績：{this.state.info.amount[this.state.index[i]]}/{this.state.info.lastAmount[this.state.index[i]]}</Text>
+              <View style={{paddingLeft:40}}>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>{this.state.info.address[index[i]]}</Text>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>電話：{this.state.info.phone[index[i]]}</Text>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>業績：{this.state.info.amount[index[i]]}/{this.state.info.lastAmount[index[i]]}</Text>
               </View>
+              <TouchableOpacity onPress={this.Confirm.bind(this,this.state.index[i])} style={{paddingLeft:120,paddingRight:120,marginBottom:10}}>
+                <Text style={[Style.font_option,{borderRadius:20,borderWidth:1,borderColor:this.state.info.color[index[i]],color:this.state.info.color[index[i]],fontSize:16,textAlign:'center'}]}>送出</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableOpacity>
