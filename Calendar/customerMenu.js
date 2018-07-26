@@ -23,8 +23,10 @@ export default class MyComponent extends Component {
     this.SetKey = this.SetKey.bind(this);
     this.state = {
       info:{name:[],address:[],phone:[],lastDate:[],amount:[],lastAmount:[],color:[]},
-      name:[],
-      color:[],
+      name:[], //當前顯示客戶名稱
+      color:[], //當前顯示客戶顏色
+      display:[], //當前顯示客戶詳細內容顯示方式
+      index:[], //當前顯示客戶的編號
       key:{type:'所有'}
     };
   }
@@ -32,7 +34,7 @@ export default class MyComponent extends Component {
   GetCustomerList()
   {
     var info;
-    var name=[],address=[],phone=[],lastDate=[],amount=[],lastAmount=[],color=[],type=[];
+    var name=[],address=[],phone=[],lastDate=[],amount=[],lastAmount=[],color=[],type=[],weight=[],display=[],index=[];
     var url = 'http://localhost:8081/Calendar/data/MapIfno.js';
     fetch(url)
       .then((response) => response.json())
@@ -43,8 +45,10 @@ export default class MyComponent extends Component {
           address.push(response[i].address);
           phone.push(response[i].telephone1);
           lastDate.push(response[i].lastDate);
-          amount.push(response[i].amount);
-          lastAmount.push(response[i].lastAmount);
+          amount.push(Math.floor(response[i].Amount));
+          lastAmount.push(Math.floor(response[i].LastAmount));
+          weight.push(response[i].Weighted);
+          display.push('none');
           if(response[i].Type == 'account')
           {
             color.push('#01814a');
@@ -55,10 +59,10 @@ export default class MyComponent extends Component {
             type.push('淺客');
             color.push('#01b468');
           }
-
+          index.push(i);
         }
-        info = {name:name,address:address,phone:phone,lastDate:lastDate,amount:amount,lastAmount:lastAmount,color:color,type:type};
-        this.setState({info:info,name:info.name,color:info.color});
+        info = {name:name,address:address,phone:phone,lastDate:lastDate,amount:amount,lastAmount:lastAmount,color:color,type:type,weight:weight};
+        this.setState({info:info,name:info.name,color:info.color,display:display,index:index});
       })
       .catch((error) =>{
         console.error(error);
@@ -86,10 +90,11 @@ export default class MyComponent extends Component {
   {
     var type = this.state.key.type;
     var sort = this.state.key.sort;
-    var index = [];
     //type篩選
     if( type != '所有')
     {
+      var index = [];
+      //計算符合條件的店家在陣列中位置
       for(var i=0;i<this.state.info.type.length;i++)
       {
         var num = this.state.info.type.indexOf(this.state.key.type,i);
@@ -103,15 +108,166 @@ export default class MyComponent extends Component {
         if(type == '顧客') color.push('#01814a');
         else color.push('#01b468');
       }
-      this.setState({name:name,color:color});
+      this.setState({name:name,color:color,index:index});
     }
     else if(type == '所有')
     {
-      // var name = this.state.info.name;
-      // var colot = this.state.info.color;
-      // this.setState({name:name,color:color});
-      console.warn(1);
+      var index = [];
+      var name = this.state.info.name;
+      var color = this.state.info.color;
+      for(var i=0;i<this.state.info.name.length;i++)
+      {
+        index.push(i);
+      }
+      this.setState({name:name,color:color,index:index});
     }
+    //sort排列
+    var name = this.state.name;
+    if(sort == '權重')
+    {
+      var weight = [];
+      var index =[];
+      var temp = [];
+      var color = type=='所有'? []:this.state.color;
+      //列出篩選後的店家的權重
+      for(var i =0;i<name.length;i++)
+      {
+        for(var j=0;j<this.state.info.name.length;j++)
+        {
+          if(this.state.info.name[j] == name[i])
+          {
+            weight.push(this.state.info.weight[j]);
+          }
+        }
+      }
+      //排列權重(大到小)
+      weight.sort((a,b)=>{return b-a;})
+      // console.warn(weight);
+      //計算依照權重排列後的店家名稱
+      for(var i=0;i<weight.length;i++)
+      {
+        for(var j=0;j<this.state.info.weight.length;j++)
+        {
+          if(this.state.info.weight[j]==weight[i]  && !temp.includes(this.state.info.name[j]))
+          {
+            if(type == '所有')
+            {
+               temp.push(this.state.info.name[j]);
+               color.push(this.state.info.color[j]);
+               index.push(j);
+            }
+            else {
+              if(this.state.info.type[j] == type)
+              {
+                 temp.push(this.state.info.name[j]);
+                 index.push(j);
+              }
+            }
+          }
+        }
+      }
+      this.setState({name:temp,color:color,index:index});
+    }
+    else if(sort == '今年業績')
+    {
+      var amount = [];
+      var index =[];
+      var temp = [];
+      var color = type=='所有'? []:this.state.color;
+      //列出篩選後的店家的今年業績
+      for(var i =0;i<name.length;i++)
+      {
+        for(var j=0;j<this.state.info.name.length;j++)
+        {
+          if(this.state.info.name[j] == name[i])
+          {
+            amount.push(this.state.info.amount[j]);
+          }
+        }
+      }
+      //排列今年業績(大到小)
+      amount.sort((a,b)=>{return b-a;})
+      //計算依照權重排列後的店家名稱
+      for(var i=0;i<amount.length;i++)
+      {
+        for(var j=0;j<this.state.info.amount.length;j++)
+        {
+          if(this.state.info.amount[j]==amount[i]  && !temp.includes(this.state.info.name[j]))
+          {
+            if(type == '所有')
+            {
+               temp.push(this.state.info.name[j]);
+               color.push(this.state.info.color[j]);
+                index.push(j);
+            }
+            else {
+              if(this.state.info.type[j] == type)
+              {
+                temp.push(this.state.info.name[j]);
+                index.push(j);
+              }
+            }
+          }
+        }
+      }
+      this.setState({name:temp,color:color,index:index});
+    }
+    else if(sort == '去年業績')
+    {
+      var lastAmount = [];
+      var index =[];
+      var temp = [];
+      var color = type=='所有'? []:this.state.color;
+      //列出篩選後的店家的去年業績
+      for(var i =0;i<name.length;i++)
+      {
+        for(var j=0;j<this.state.info.name.length;j++)
+        {
+          if(this.state.info.name[j] == name[i])
+          {
+            lastAmount.push(this.state.info.lastAmount[j]);
+          }
+        }
+      }
+      //排列去年業績(大到小)
+      lastAmount.sort((a,b)=>{return b-a;})
+      //計算依照去年業績排列後的店家名稱
+      for(var i=0;i<lastAmount.length;i++)
+      {
+        for(var j=0;j<this.state.info.lastAmount.length;j++)
+        {
+          if(this.state.info.lastAmount[j]==lastAmount[i]  && !temp.includes(this.state.info.name[j]))
+          {
+            if(type == '所有')
+            {
+               temp.push(this.state.info.name[j]);
+               color.push(this.state.info.color[j]);
+               index.push(j);
+            }
+            else {
+              if(this.state.info.type[j] == type)
+              {
+                temp.push(this.state.info.name[j]);
+                index.push(j);
+              }
+            }
+          }
+        }
+      }
+      this.setState({name:temp,color:color,index:index});
+    }
+  }
+
+  //顯示細節
+  ShowDetail(index)
+  {
+    var detail = [];
+    for(var i=0;i<this.state.display.length;i++)
+    {
+      if(i == index) detail.push('flex');
+      else detail.push('none');
+    }
+    this.setState({display:detail});
   }
 
   //關鍵字搜尋
@@ -123,7 +279,7 @@ export default class MyComponent extends Component {
     {
       if(this.state.info.name[i].match(key) != null) temp.push(this.state.info.name[i]);
     }
-    console.warn(temp);
+    // console.warn(temp);
     this.setState({name:temp})
   }
 
@@ -160,9 +316,17 @@ export default class MyComponent extends Component {
     for(var i=0;i<name.length;i++)
     {
       cards.push(
-        <TouchableOpacity key={i}>
+        <TouchableOpacity key={i} onPress={this.ShowDetail.bind(this,i)}>
           <View style={[,{margin:10,backgroundColor:this.state.color[i]}]}>
             <Text  style={[Style.font_option,{color:'white',textAlign:'center'}]}>{this.state.name[i]}</Text>
+            //details
+            <View style={[,{backgroundColor:'white',display:this.state.display[i]}]}>
+              <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'center'}]}>{this.state.info.address[this.state.index[i]]}</Text>
+              <View style={[Style.row,{justifyContent:'flex-start',paddingLeft:20}]}>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'left',marginRight:10}]}>電話：{this.state.info.phone[this.state.index[i]]}</Text>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.color[i],textAlign:'left'}]}>業績：{this.state.info.amount[this.state.index[i]]}/{this.state.info.lastAmount[this.state.index[i]]}</Text>
+              </View>
+            </View>
           </View>
         </TouchableOpacity>
       );
