@@ -22,8 +22,9 @@ export default class MyComponent extends Component {
     this.GetCustomerList();
     this.Search = this.Search.bind(this);
     this.SetKey = this.SetKey.bind(this);
+    this.Simplify = this.Simplify.bind(this);
     this.state = {
-      info:{name:[],address:[],phone:[],lastDate:[],amount:[],lastAmount:[],color:[]},
+      info:{id:[],name:[],address:[],phone:[],lastDate:[],amount:[],lastAmount:[],color:[]},
       name:[], //當前顯示客戶名稱
       color:[], //當前顯示客戶顏色
       display:[], //當前顯示客戶詳細內容顯示方式
@@ -35,7 +36,7 @@ export default class MyComponent extends Component {
   GetCustomerList()
   {
     var info;
-    var name=[],address=[],phone=[],lastDate=[],amount=[],lastAmount=[],color=[],type=[],weight=[],display=[],index=[];
+    var  id=[],name=[],address=[],phone=[],lastDate=[],amount=[],lastAmount=[],color=[],type=[],weight=[],display=[],index=[];
     var url = 'http://localhost:8081/Calendar/data/MapIfno.js';
     fetch(url)
       .then((response) => response.json())
@@ -53,7 +54,7 @@ export default class MyComponent extends Component {
           if(response[i].Type == 'account')
           {
             color.push('#01814a');
-            type.push('顧客');
+            type.push('客戶');
           }
           else
           {
@@ -61,8 +62,9 @@ export default class MyComponent extends Component {
             color.push('#01b468');
           }
           index.push(i);
+          id.push(response[i].id);
         }
-        info = {name:name,address:address,phone:phone,lastDate:lastDate,amount:amount,lastAmount:lastAmount,color:color,type:type,weight:weight};
+        info = {id:id,name:name,address:address,phone:phone,lastDate:lastDate,amount:amount,lastAmount:lastAmount,color:color,type:type,weight:weight};
         this.setState({info:info,name:info.name,color:info.color,display:display,index:index,indexTemp:index});
       })
       .catch((error) =>{
@@ -74,7 +76,13 @@ export default class MyComponent extends Component {
   SetKey(value)
   {
     var key = this.state.key;
-    if(value == '顧客' || value == '淺客'||value=='所有')
+    var display = [];
+    //reset display
+    for(var i=0;i<this.state.display.length;i++)
+    {
+      display.push('none');
+    }
+    if(value == '客戶' || value == '淺客'||value=='所有')
     {
       key.type = value;
     }
@@ -82,7 +90,7 @@ export default class MyComponent extends Component {
     {
       key.sort = value;
     }
-    this.setState({key:key});
+    this.setState({key:key,display:display});
     this.Sort();
   }
 
@@ -106,7 +114,7 @@ export default class MyComponent extends Component {
       for(var i=0;i<index.length;i++)
       {
         name.push(this.state.info.name[index[i]]);
-        if(type == '顧客') color.push('#01814a');
+        if(type == '客戶') color.push('#01814a');
         else color.push('#01b468');
       }
       this.setState({name:name,color:color,index:index,indexTemp:index});
@@ -260,7 +268,15 @@ export default class MyComponent extends Component {
   }
 
   //簡化數字
-
+  Simplify(num)
+  {
+    var simpleNum;
+    if(num < 10000) simpleNum = num;
+    else {
+      simpleNum = Math.round(num/10000) + '萬';
+    }
+    return simpleNum;
+  }
 
   //顯示細節
   ShowDetail(index)
@@ -284,6 +300,14 @@ export default class MyComponent extends Component {
     for(var i=0;i<this.state.indexTemp.length;i++) if(this.state.info.name[this.state.indexTemp[i]].match(key) != null) index.push(this.state.indexTemp[i]);
     this.setState({index:index})
   }
+  //提交，i為當前選擇客戶之index
+  Confirm(i)
+  {
+    var data = {id:this.state.info.id[i],name:this.state.info.name[i],type:this.state.info.type[i]};
+    const {navigate,goBack,state} = this.props.navigation;
+    state.params.callback(data); //回傳資料到新增任務頁面
+    this.props.navigation.goBack(); //回前一頁
+  }
 
   //設置頂部導航欄的內容
     static navigationOptions = ({navigation, screenProps}) => ({
@@ -296,15 +320,6 @@ export default class MyComponent extends Component {
         //頂部標題欄文本的樣式
         headerTitleStyle: {fontSize:20,letterSpacing:5,textAlign:'center'},
     });
-
-    //提交
-    Confirm(i)
-    {
-      const {navigate,goBack,state} = this.props.navigation;
-      state.params.callback(i);
-      this.props.navigation.goBack();  
-    }
-
   render() {
     var cards =[];
     var index = this.state.index;
@@ -318,7 +333,7 @@ export default class MyComponent extends Component {
     let typeOption =[{
       value: '所有',
     }, {
-      value: '顧客',
+      value: '客戶',
     }, {
       value: '淺客',
     }];
@@ -328,18 +343,23 @@ export default class MyComponent extends Component {
       cards.push(
         <TouchableOpacity key={i} onPress={this.ShowDetail.bind(this,i)}>
           <View style={[,{margin:10,backgroundColor:this.state.info.color[index[i]]}]}>
-            <Text  style={[Style.font_option,{color:'white',textAlign:'center'}]}>{this.state.info.name[index[i]]}</Text>
+            //title
+            <View style={[Style.row,{padding:10}]}>
+              <Text  style={[Style.font_option,{flex:2,color:'white',textAlign:'center'}]}>{this.state.info.name[index[i]]}</Text>
+              <Text  style={[Style.font_option,{fontSize:16,flex:2,color:'white',textAlign:'center'}]}>{this.Simplify(this.state.info.amount[index[i]])}</Text>
+              <TouchableOpacity onPress={this.Confirm.bind(this,this.state.index[i])} style={{flex:1,backgroundColor:'white'}}>
+                <Text style={[Style.font_option,{borderWidth:1,borderColor:'white',color:this.state.info.color[index[i]],fontSize:16,textAlign:'center'}]}>送出</Text>
+              </TouchableOpacity>
+            </View>
             //details
             <View style={[,{backgroundColor:'white',display:this.state.display[i]}]}>
               <View style={{paddingLeft:40}}>
                 <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>{this.state.info.address[index[i]]}</Text>
                 <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>電話：{this.state.info.phone[index[i]]}</Text>
-                <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>業績：{this.state.info.amount[index[i]]}/{this.state.info.lastAmount[index[i]]}</Text>
+                <Text  style={[Style.font_option,{fontSize:16,color:this.state.info.color[index[i]],textAlign:'left'}]}>業績：{this.Simplify(this.state.info.amount[index[i]])} / {this.Simplify(this.state.info.lastAmount[index[i]])}</Text>
               </View>
-              <TouchableOpacity onPress={this.Confirm.bind(this,this.state.index[i])} style={{paddingLeft:120,paddingRight:120,marginBottom:10}}>
-                <Text style={[Style.font_option,{borderRadius:20,borderWidth:1,borderColor:this.state.info.color[index[i]],color:this.state.info.color[index[i]],fontSize:16,textAlign:'center'}]}>送出</Text>
-              </TouchableOpacity>
             </View>
+            //
           </View>
         </TouchableOpacity>
       );

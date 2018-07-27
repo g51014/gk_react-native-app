@@ -30,6 +30,7 @@ export default class AddScreen extends Component {
     this.GetSelectDate = this.GetSelectDate.bind(this);
     this.GetSelectOption = this.GetSelectOption.bind(this);
     this.Cancel = this.Cancel.bind(this);
+    this.ToCustomerMenu = this.ToCustomerMenu.bind(this);
     this.state = {
       type:['工作重點','會議','內部作業','內部教育訓練','外部作業','JoinCall','待辦事項','外部受訓','空區作業','活動/講座/團課','請假'],
       typeImg:[require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),],
@@ -102,18 +103,47 @@ export default class AddScreen extends Component {
     //回到月曆介面
   }
 
+  //工作重點
+  ToCustomerMenu()
+  {
+    var info = this.state.info;
+    //只有選擇工作重點時才前往選擇客戶
+    if(this.state.currentType == 0)
+    {
+      this.props.navigation.navigate('CustomerMenu',{
+        callback:(data) => {
+          info.title = '拜訪'+data.name;
+          this.setState({customer:data,info:info});
+        },
+      });
+    }
+  }
+
   Confirm()
   {
     var info = this.state.info;
     var type = this.state.currentType;
-    if(info.title == null || info.title =='') Alert.alert('標題不得為空');
+    if(info.title == null || info.title =='')
+    {
+      if(type == 0) Alert.alert('請選擇客戶');
+      else Alert.alert('標題不得為空');
+    }
+    //成功
     else
     {
       if(type == 1 || type == 2 || type ==3 || type == 10) info.color = '#7B68EE';
       else if (type == 6 || type == 8) info.color = '#d94600';
       else info.color = '#01b468';
       this.setState({info:info});
-      console.warn(this.state.info);
+      //post到後端
+      if(type == 0)
+      {
+        console.warn(this.state.info);
+        console.warn(this.state.customer);
+      }
+      else {
+        console.warn(this.state.info);
+      }
     }
     //送出資料回到月曆介面
   }
@@ -229,12 +259,13 @@ export default class AddScreen extends Component {
           <TouchableOpacity onPress={this.Previous.bind(this)}>
             <Image resizeMode='contain' style={[,{width:40}]} source={require('./img/icon_arrow_left.png')} ></Image>
           </TouchableOpacity>
-          <Image style={[styles.class,{}]} source={this.state.typeImg[this.state.currentType]} ></Image>
+          <TouchableOpacity onPress={this.ToCustomerMenu} activeOpacity={this.state.type.indexOf(this.state.info.type)+0.3}>
+            <Image style={[styles.class,{}]} source={this.state.typeImg[this.state.currentType]} ></Image>
+          </TouchableOpacity>
           <TouchableOpacity onPress={this.Next.bind(this)}>
             <Image resizeMode='contain' style={[,{width:40}]} source={require('./img/icon_arrow_right.png')} ></Image>
           </TouchableOpacity>
         </View>
-        //客戶選單
         //12小項選單
         <OptionMenu callback={this.GetSelectOption}/>
         //細節區

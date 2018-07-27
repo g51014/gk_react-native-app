@@ -33,9 +33,7 @@ export default class CalendarTest extends Component {
 
   ToAddSchedule()
   {
-    this.props.navigation.navigate('CustomerMenu',{
-      callback:(data) => {console.warn(data);}
-    });
+    this.props.navigation.navigate('AddSchedule');
   }
 
   ToCards(key)

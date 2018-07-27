@@ -13,6 +13,7 @@ export default class ContentCard extends Component {
   constructor(props){
     super(props);
   }
+
   render() {
     return (
       <View style={[Style.setArea,Style.row]}>
