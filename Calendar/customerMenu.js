@@ -8,6 +8,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import Menu, { MenuContext, MenuOptions, MenuOption, MenuTrigger } from 'react-native-menu';
 import { SearchBar } from 'react-native-elements';
@@ -20,6 +21,7 @@ export default class MyComponent extends Component {
   constructor(props) {
     super(props);
     this.GetCustomerList();
+    this.CustomAccount = this.CustomAccount.bind(this);
     this.Search = this.Search.bind(this);
     this.SetKey = this.SetKey.bind(this);
     this.Simplify = this.Simplify.bind(this);
@@ -29,7 +31,8 @@ export default class MyComponent extends Component {
       color:[], //當前顯示客戶顏色
       display:[], //當前顯示客戶詳細內容顯示方式
       index:[], //當前顯示客戶的編號,indexTemp為目前條件的index備份,除關鍵字查詢外都會與index相同
-      key:{type:'所有'}
+      key:{type:'所有'}, //篩選與排列條件
+      custom:'none',
     };
   }
 
@@ -82,7 +85,7 @@ export default class MyComponent extends Component {
     {
       display.push('none');
     }
-    if(value == '客戶' || value == '淺客'||value=='所有')
+    if(value == '客戶' || value == '淺客'||value=='所有' || value=='自訂')
     {
       key.type = value;
     }
@@ -94,7 +97,7 @@ export default class MyComponent extends Component {
     this.Sort();
   }
 
-  //排列
+  //排列 (先篩選再依照條件排序)
   Sort()
   {
     var type = this.state.key.type;
@@ -104,20 +107,27 @@ export default class MyComponent extends Component {
     {
       var index = [];
       //計算符合條件的店家在陣列中位置
-      for(var i=0;i<this.state.info.type.length;i++)
+      if(type == '自訂')
       {
-        var num = this.state.info.type.indexOf(this.state.key.type,i);
-        if(!index.includes(num) && num != -1)index.push(num);
+        this.setState({index:index,custom:'flex'});
       }
-      var name = [];
-      var color = [];
-      for(var i=0;i<index.length;i++)
+      else
       {
-        name.push(this.state.info.name[index[i]]);
-        if(type == '客戶') color.push('#01814a');
-        else color.push('#01b468');
+        for(var i=0;i<this.state.info.type.length;i++)
+        {
+          var num = this.state.info.type.indexOf(this.state.key.type,i);
+          if(!index.includes(num) && num != -1)index.push(num);
+        }
+        var name = [];
+        var color = [];
+        for(var i=0;i<index.length;i++)
+        {
+          name.push(this.state.info.name[index[i]]);
+          if(type == '客戶') color.push('#01814a');
+          else color.push('#01b468');
+        }
+        this.setState({name:name,color:color,index:index,indexTemp:index,custom:'none'});
       }
-      this.setState({name:name,color:color,index:index,indexTemp:index});
     }
     else if(type == '所有')
     {
@@ -290,6 +300,12 @@ export default class MyComponent extends Component {
     this.setState({display:detail});
   }
 
+  //自訂客戶
+  CustomAccount(name)
+  {
+    this.setState({customName:name});
+  }
+
   //關鍵字搜尋
   Search(input)
   {
@@ -300,10 +316,19 @@ export default class MyComponent extends Component {
     for(var i=0;i<this.state.indexTemp.length;i++) if(this.state.info.name[this.state.indexTemp[i]].match(key) != null) index.push(this.state.indexTemp[i]);
     this.setState({index:index})
   }
+
   //提交，i為當前選擇客戶之index
-  Confirm(i)
+  Confirm(i,custom)
   {
-    var data = {id:this.state.info.id[i],name:this.state.info.name[i],type:this.state.info.type[i]};
+    var data;
+    if(custom) {
+      data = {id:null,name:this.state.customName,type:null};
+    }
+    else
+    {
+      var type = this.state.info.type[i] == '客戶'?1:0;
+      data = {id:this.state.info.id[i],name:this.state.info.name[i],type:type};
+    }
     const {navigate,goBack,state} = this.props.navigation;
     state.params.callback(data); //回傳資料到新增任務頁面
     this.props.navigation.goBack(); //回前一頁
@@ -336,6 +361,8 @@ export default class MyComponent extends Component {
       value: '客戶',
     }, {
       value: '淺客',
+    },{
+      value: '自訂',
     }];
     //卡片製作
     for(var i=0;i<index.length;i++)
@@ -347,7 +374,7 @@ export default class MyComponent extends Component {
             <View style={[Style.row,{padding:10}]}>
               <Text  style={[Style.font_option,{flex:2,color:'white',textAlign:'center'}]}>{this.state.info.name[index[i]]}</Text>
               <Text  style={[Style.font_option,{fontSize:16,flex:2,color:'white',textAlign:'center'}]}>{this.Simplify(this.state.info.amount[index[i]])}</Text>
-              <TouchableOpacity onPress={this.Confirm.bind(this,this.state.index[i])} style={{flex:1,backgroundColor:'white'}}>
+              <TouchableOpacity onPress={this.Confirm.bind(this,this.state.index[i],false)} style={{flex:1,backgroundColor:'white'}}>
                 <Text style={[Style.font_option,{borderWidth:1,borderColor:'white',color:this.state.info.color[index[i]],fontSize:16,textAlign:'center'}]}>送出</Text>
               </TouchableOpacity>
             </View>
@@ -390,9 +417,23 @@ export default class MyComponent extends Component {
             />
           </View>
         </View>
+        //custom
+        <View style={[,{margin:10,backgroundColor:'#d9b300',display:this.state.custom}]}>
+          <View style={[Style.row,{padding:10}]}>
+            <TextInput
+            onEndEditing={event => {this.CustomAccount(event.nativeEvent.text);}}
+            style={[Style.font_option,{flex:4,color:'white',textAlign:'center'}]}
+            placeholder={'客戶名稱'}
+            placeholderTextColor={'gray'}/>
+            <TouchableOpacity onPress={this.Confirm.bind(this,1,true)} style={{flex:1,backgroundColor:'white'}}>
+              <Text style={[Style.font_option,{borderWidth:1,borderColor:'white',color:'#d9b300',fontSize:16,textAlign:'center'}]}>送出</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
         {cards}
 
       </ScrollView>
+
     );
   }
 }

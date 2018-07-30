@@ -40,16 +40,19 @@ export default class OptionMenu extends Component {
       }
       this.setState({color:color});
     }
-    this.props.callback(optionTitle,'enable');
+    this.props.callback(optionTitle,optionId,'enable');
   }
 
   DisableOption(optionId)
   {
-    var color = this.state.option.color;
-    var optionTitle = this.state.option.title[optionId];
-    color[optionId] = 'gray';
-    this.setState({color:color});
-    this.props.callback(optionTitle,'disable');
+    if(this.props.cancel)
+    {
+      var color = this.state.option.color;
+      var optionTitle = this.state.option.title[optionId];
+      color[optionId] = 'gray';
+      this.setState({color:color});
+      this.props.callback(optionTitle,optionId,'disable');
+    }
   }
 
   render() {

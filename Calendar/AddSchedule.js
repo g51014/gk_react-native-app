@@ -24,6 +24,14 @@ export default class AddScreen extends Component {
     var year = date.getFullYear();
     var month = (date.getMonth()+1)<10?'0'+(date.getMonth()+1):(date.getMonth()+1);
     var day = date.getDate()<10?'0'+date.getDate():date.getDate();
+    var option ={option1:{},option2:{},option3:{},option4:{},option5:{},option6:{},option7:{},option8:{},option9:{},option10:{},option11:{},option12:{}};
+    for(var i=0;i<12;i++)
+    {
+      var optionNum = 'option' + (i+1);
+      option[optionNum].content = '';
+      option[optionNum].enable = false;
+      option[optionNum].title = '';
+    }
     this.EnableRemind = this.EnableRemind.bind(this);
     this.DisableRemind = this.DisableRemind.bind(this);
     this.GetInfo = this.GetInfo.bind(this);
@@ -37,11 +45,9 @@ export default class AddScreen extends Component {
       onColor:'#009100',
       offColor:'black',
       currentType:0,
-      currentOption:null,
-      currentOptionContent:null,//當前小項內容
       customerMenuDisplay:'flex',
       selectOption:[],
-      info:{type:'工作重點',selectDate:year+'-'+month+'-'+day,remind:true,title:null,place:null,content:{}},
+      info:{type:'工作重點',selectDate:year+'-'+month+'-'+day,remind:true,title:null,place:null,option:option},
       edit:false,
     };
   }
@@ -111,6 +117,7 @@ export default class AddScreen extends Component {
     if(this.state.currentType == 0)
     {
       this.props.navigation.navigate('CustomerMenu',{
+        //獲得CustomerMenu的內容
         callback:(data) => {
           info.title = '拜訪'+data.name;
           this.setState({customer:data,info:info});
@@ -138,7 +145,7 @@ export default class AddScreen extends Component {
       //post到後端
       if(type == 0)
       {
-        console.warn(this.state.info);
+        console.warn(this.state.info.option);
         console.warn(this.state.customer);
       }
       else {
@@ -146,14 +153,7 @@ export default class AddScreen extends Component {
       }
     }
     //送出資料回到月曆介面
-  }
 
-//回傳customerMenu元件的內容
-  GetCustomer(data)
-  {
-    var info = this.state.info;
-    info.title = data;
-    this.setState({info:info});
   }
 
 //回傳contentcards元件的內容
@@ -170,30 +170,36 @@ export default class AddScreen extends Component {
       info.place = data
     }
     else {
-      var option = type;
-      info.content[option] = data;
+      for(var i=0;i<Object.getOwnPropertyNames(this.state.info.option).length;i++)
+      {
+        var num = 'option'+(i+1);
+        if(type == info.option[num].title) info.option[num].content = data;
+      }
     }
     this.setState({info:info});
   }
 
-//回傳optionMenu元件已選擇的選項,type 0為取消,1為選擇
-  GetSelectOption(option,type)
+//回傳optionMenu元件已選擇的選項,type
+  GetSelectOption(optionTitle,optionId,type)
   {
     // console.warn(option+this.state.currentOptionContent);
     var info = this.state.info;
     var selectOption = this.state.selectOption;
+    var num = 'option'+(optionId+1);
     if(type == 'enable'){
-      if(!selectOption.includes(option))
+      if(!selectOption.includes(optionTitle))
       {
-         info.content[option] = '';
-         selectOption.push(option);
+         selectOption.push(optionTitle);
+         info.option[num].enable = true;
+         info.option[num].title = optionTitle;
          this.setState({selectOption:selectOption,info:info});
       }
     }
     else { //disable
-      delete info.content[option];
-      var index = selectOption.indexOf(option);
-      selectOption.splice(index,1);
+      var index = selectOption.indexOf(optionTitle);
+      selectOption.splice(index,1); //移除selectOption中的option
+      info.option[num].enable = false;
+      info.option[num].content = '';
       this.setState({selectOption:selectOption,info:info});
     }
   }
@@ -233,24 +239,25 @@ export default class AddScreen extends Component {
     });
 
   render() {
-    // console.warn(this.state.info);
     // console.warn(this.state.currentOption);
     // console.warn(this.state.info.content[this.state.selectOption[0]]);
     // console.warn(this.state.selectOption);
     //動態製作小項卡片
     var option =[];
-    for(var i=0;i<this.state.selectOption.length;i++)
+    for(var i=0;i<Object.getOwnPropertyNames(this.state.info.option).length;i++)
     {
-      var value = this.state.info.content[this.state.selectOption[i]];
-      if(value == 'undefined') value = '';
-      option.push(<ContentCard
-      key ={i}
-      title={this.state.selectOption[i]}
-      value={value}
-      edit={true}
-      callback={this.GetInfo}
-      placeholder={'選填'}
-      />);
+      var num = 'option'+(i+1);
+      if(this.state.info.option[num].enable)
+      {
+        option.push(<ContentCard
+        key ={i}
+        title={this.state.info.option[num].title}
+        value={this.state.info.option[num].content}
+        edit={true}
+        callback={this.GetInfo}
+        placeholder={'選填'}
+        />);
+      }
     }
     return (
       <ScrollView style={[Style.column,Style.container]}>
@@ -267,7 +274,7 @@ export default class AddScreen extends Component {
           </TouchableOpacity>
         </View>
         //12小項選單
-        <OptionMenu callback={this.GetSelectOption}/>
+        <OptionMenu callback={this.GetSelectOption} cancel={true}/>
         //細節區
         <View style={[Style.column,{marginTop:50}]}>
           //標題
