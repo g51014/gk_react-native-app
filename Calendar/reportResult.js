@@ -18,24 +18,9 @@ export default class ReportResult extends Component {
   {
     super(props);
     this.GetSelectOption = this.GetSelectOption.bind(this);
-    var option ={option1:{},option2:{},option3:{},option4:{},option5:{},option6:{},option7:{},option8:{},option9:{},option10:{},option11:{},option12:{}};
-    for(var i=0;i<12;i++)
-    {
-      var optionNum = 'option' + (i+1);
-      option[optionNum].content = '';
-      option[optionNum].enable = false;
-    }
     this.state = {
-      type:['工作重點','會議','內部作業','內部教育訓練','外部作業','JoinCall','待辦事項','外部受訓','空區作業','活動/講座/團課','請假'],
-      typeImg:[require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),],
-      onColor:'#009100',
-      offColor:'black',
-      currentType:0,
-      currentOption:null,
-      currentOptionContent:null,//當前小項內容
-      customerMenuDisplay:'flex',
-      selectOption:[],
-      info:{type:'工作重點',remind:true,title:null,place:null,option:option},
+      selectOption:[], //驗證是否已選
+      info:{type:'工作重點',remind:true,title:null,place:null,option:this.props.optionInfo},
       edit:false,
     };
   }
@@ -52,7 +37,7 @@ export default class ReportResult extends Component {
     //回到月曆介面
   }
 
-  //回傳optionMenu元件已選擇的選項,type 0為取消,1為選擇
+  //回傳optionMenu元件已選擇的選項
     GetSelectOption(optionTitle,optionId,type)
     {
       var info = this.state.info;
@@ -66,11 +51,6 @@ export default class ReportResult extends Component {
            info.option[num].enable = true;
            this.setState({info:info});
         }
-      }
-      else { //disable
-        var index = selectOption.indexOf(optionTitle);
-        selectOption.splice(index,1);
-        this.setState({selectOption:selectOption});
       }
     }
 
@@ -87,14 +67,13 @@ export default class ReportResult extends Component {
     });
 
   render() {
-    console.warn(this.state.info);
     return (
       <ScrollView style={[Style.column,Style.container]}>
         <View>
-          <Text style={Style.font_option}></Text>
+          <Text style={Style.font_option}>類別：</Text>
         </View>
         //12小項選單
-        <OptionMenu callback={this.GetSelectOption} cancel={false}/>
+        <OptionMenu callback={this.GetSelectOption} cancel={false} mode={'custom'}/>
         //icon區
         <View style={[,Style.footer,Style.row]}>
           <TouchableOpacity onPress={this.Cancel.bind(this)}>
@@ -112,6 +91,12 @@ export default class ReportResult extends Component {
     );
   }
 }
+
+//預設值
+  ReportResult.defaultProps ={
+  //按鈕資訊
+  optionInfo:{option1:{enable:true,content:null},option2:{enable:true,content:null},option3:{enable:false,content:null},option4:{enable:false,content:null},option5:{enable:false,content:null},option6:{enable:false,content:null},option7:{enable:false,content:null},option8:{enable:false,content:null},option9:{enable:false,content:null},option10:{enable:false,content:null},option11:{enable:false,content:null},option12:{enable:false,content:null}}
+};
 
 const styles = StyleSheet.create({
   container: {

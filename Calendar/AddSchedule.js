@@ -274,7 +274,7 @@ export default class AddScreen extends Component {
           </TouchableOpacity>
         </View>
         //12小項選單
-        <OptionMenu callback={this.GetSelectOption} cancel={true}/>
+        <OptionMenu callback={this.GetSelectOption}/>
         //細節區
         <View style={[Style.column,{marginTop:50}]}>
           //標題

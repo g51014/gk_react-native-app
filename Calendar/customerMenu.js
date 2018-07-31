@@ -423,8 +423,8 @@ export default class MyComponent extends Component {
             <TextInput
             onEndEditing={event => {this.CustomAccount(event.nativeEvent.text);}}
             style={[Style.font_option,{flex:4,color:'white',textAlign:'center'}]}
-            placeholder={'客戶名稱'}
-            placeholderTextColor={'gray'}/>
+            placeholder={'輸入客戶名稱'}
+            placeholderTextColor={'white'}/>
             <TouchableOpacity onPress={this.Confirm.bind(this,1,true)} style={{flex:1,backgroundColor:'white'}}>
               <Text style={[Style.font_option,{borderWidth:1,borderColor:'white',color:'#d9b300',fontSize:16,textAlign:'center'}]}>送出</Text>
             </TouchableOpacity>
