@@ -36,9 +36,26 @@ export default class CalendarTest extends Component {
     this.props.navigation.navigate('AddSchedule');
   }
 
+//前往單筆行程
   ToCards(key)
   {
-    console.warn(key);
+    this.props.navigation.navigate('ReportResult',{time:'2018-07-01',
+    type:'會議',
+    place:'公司',
+    title:'內部會議',
+    option:{
+      option1:{enable:true,content:null},
+      option2:{enable:true,content:null},
+      option3:{enable:false,content:null},
+      option4:{enable:false,content:null},
+      option5:{enable:false,content:null},
+      option6:{enable:false,content:null},
+      option7:{enable:false,content:null},
+      option8:{enable:false,content:null},
+      option9:{enable:false,content:null},
+      option10:{enable:false,content:null},
+      option11:{enable:false,content:null},
+      option12:{enable:false,content:null}}})
   }
 
 //點選單日

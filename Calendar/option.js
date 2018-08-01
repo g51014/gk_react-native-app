@@ -82,7 +82,6 @@ export default class OptionMenu extends Component {
       opacity:0.7,
       marginBottom:10}}>{this.state.option.title[i]}</Text>)
     }
-
     // console.warn(cards[0].props);
     return (
       <View style={[,Style.row,{justifyContent:'center',marginTop:10}]}>
@@ -119,7 +118,7 @@ OptionMenu.defaultProps ={
   //取消功能
   cancel: true,
   //按鈕資訊
-  optionInfo:{option1:{enable:true,content:null},option2:{enable:true,content:null},option3:{enable:false,content:null},option4:{enable:false,content:null},option5:{enable:false,content:null},option6:{enable:false,content:null},option7:{enable:false,content:null},option8:{enable:false,content:null},option9:{enable:false,content:null},option10:{enable:false,content:null},option11:{enable:false,content:null},option12:{enable:false,content:null}}
+  optionInfo:{option1:{enable:false,content:null},option2:{enable:false,content:null},option3:{enable:false,content:null},option4:{enable:false,content:null},option5:{enable:false,content:null},option6:{enable:false,content:null},option7:{enable:false,content:null},option8:{enable:false,content:null},option9:{enable:false,content:null},option10:{enable:false,content:null},option11:{enable:false,content:null},option12:{enable:false,content:null}}
 };
 
 const styles = StyleSheet.create({

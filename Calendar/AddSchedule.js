@@ -47,6 +47,7 @@ export default class AddScreen extends Component {
       currentType:0,
       customerMenuDisplay:'flex',
       selectOption:[],
+      //所選資訊
       info:{type:'工作重點',selectDate:year+'-'+month+'-'+day,remind:true,title:null,place:null,option:option},
       edit:false,
     };

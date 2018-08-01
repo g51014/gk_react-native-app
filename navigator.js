@@ -16,9 +16,6 @@ import ReportResult from './Calendar/reportResult';
 
 export default Navigator = StackNavigator(
   {
-    ReportResult:{
-      screen:ReportResult
-    },
     Calendar:{
       screen:Calendar,
     },
@@ -28,7 +25,9 @@ export default Navigator = StackNavigator(
     CustomerMenu:{
       screen:CustomerMenu
     },
-
+    ReportResult:{
+      screen:ReportResult
+    },
   }
 );
 

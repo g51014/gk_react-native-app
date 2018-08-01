@@ -17,10 +17,16 @@ export default class ReportResult extends Component {
   constructor(props)
   {
     super(props);
+    var time = this.props.navigation.state.params.time;
+    var option = this.props.navigation.state.params.option;
+    var type = this.props.navigation.state.params.type;
+    var place = this.props.navigation.state.params.place;
+    var title = this.props.navigation.state.params.title;
     this.GetSelectOption = this.GetSelectOption.bind(this);
     this.state = {
       selectOption:[], //驗證是否已選
-      info:{type:'工作重點',remind:true,title:null,place:null,option:this.props.optionInfo},
+      //行程資訊
+      info:{type:type,time:time,remind:true,title:title,place:place,option:option},
       edit:false,
     };
   }
@@ -69,11 +75,21 @@ export default class ReportResult extends Component {
   render() {
     return (
       <ScrollView style={[Style.column,Style.container]}>
-        <View>
-          <Text style={Style.font_option}>類別：</Text>
+        <View style={[{padding:13}]}>
+          //行程資訊
+          <View style={[{borderWidth:0.5,backgroundColor:'#fcfcfc',borderColor:'#adadad',padding:12,marginBottom:10,marginTop:10}]}>
+            <Text style={[Style.font_option,{color:'#272727'}]}>名稱： {this.state.info.title}</Text>
+            <Text style={[Style.font_option,{color:'#272727'}]}>類別： {this.state.info.type}</Text>
+            <Text style={[Style.font_option,{color:'#272727'}]}>時間： {this.state.info.time}</Text>
+            <Text style={[Style.font_option,{color:'#272727'}]}>地點： {this.state.info.place}</Text>
+          </View>
+          //12小項選單
+          <OptionMenu callback={this.GetSelectOption} cancel={false} mode={'custom'} optionInfo={this.state.info.option}/>
+          //回報區
+          <View style={[Style.view_border,{marginTop:10,padding:5}]}>
+            <Text style={[Style.font_option,{textAlign:'center'}]}>盤點</Text>
+          </View>
         </View>
-        //12小項選單
-        <OptionMenu callback={this.GetSelectOption} cancel={false} mode={'custom'}/>
         //icon區
         <View style={[,Style.footer,Style.row]}>
           <TouchableOpacity onPress={this.Cancel.bind(this)}>
@@ -94,8 +110,7 @@ export default class ReportResult extends Component {
 
 //預設值
   ReportResult.defaultProps ={
-  //按鈕資訊
-  optionInfo:{option1:{enable:true,content:null},option2:{enable:true,content:null},option3:{enable:false,content:null},option4:{enable:false,content:null},option5:{enable:false,content:null},option6:{enable:false,content:null},option7:{enable:false,content:null},option8:{enable:false,content:null},option9:{enable:false,content:null},option10:{enable:false,content:null},option11:{enable:false,content:null},option12:{enable:false,content:null}}
+
 };
 
 const styles = StyleSheet.create({
