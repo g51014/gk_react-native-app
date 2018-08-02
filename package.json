@@ -9,9 +9,11 @@
   "dependencies": {
     "react": "16.3.1",
     "react-native": "0.55.4",
+    "react-native-camera": "^1.1.4",
     "react-native-datepicker": "^1.7.2",
     "react-native-dropdown-menu": "^2.0.0",
     "react-native-elements": "^0.19.1",
+    "react-native-fs": "^2.10.14",
     "react-native-material-dropdown": "^0.11.1",
     "react-native-menu": "^0.23.0",
     "react-native-photo-upload": "^1.2.0",

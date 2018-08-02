@@ -303,20 +303,29 @@ export default class AddScreen extends Component {
         //icon區
         <View style={[,Style.footer,Style.row]}>
           <TouchableOpacity onPress={this.Cancel.bind(this)}>
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_60px.png')} ></Image>
+            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_90px.png')} ></Image>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.ToHome.bind(this)}>
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_home_60px.png')} ></Image>
-          </TouchableOpacity>
+          <View style={[,{flex:1}]}></View>
           <TouchableOpacity onPress={this.Confirm.bind(this)}>
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_60px.png')} ></Image>
+            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_90px.png')} ></Image>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     );
   }
 }
+
+// <View style={[,Style.footer,Style.row]}>
+//   <TouchableOpacity onPress={this.Cancel.bind(this)}>
+//     <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_60px.png')} ></Image>
+//   </TouchableOpacity>
+//   <TouchableOpacity onPress={this.ToHome.bind(this)}>
+//     <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_home_60px.png')} ></Image>
+//   </TouchableOpacity>
+//   <TouchableOpacity onPress={this.Confirm.bind(this)}>
+//     <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_60px.png')} ></Image>
+//   </TouchableOpacity>
+// </View>
 
 const styles = StyleSheet.create({
   title: {

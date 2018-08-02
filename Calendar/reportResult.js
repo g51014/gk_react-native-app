@@ -88,18 +88,17 @@ export default class ReportResult extends Component {
           //回報區
           <View style={[Style.view_border,{marginTop:10,padding:5}]}>
             <Text style={[Style.font_option,{textAlign:'center'}]}>盤點</Text>
+            <View style={Style.view_border}></View>
           </View>
         </View>
         //icon區
         <View style={[,Style.footer,Style.row]}>
           <TouchableOpacity onPress={this.Cancel.bind(this)}>
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_60px.png')} ></Image>
+            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_90px.png')} ></Image>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.ToHome.bind(this)}>
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_home_60px.png')} ></Image>
-          </TouchableOpacity>
+          <View style={[,{flex:1}]}></View>
           <TouchableOpacity >
-            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_60px.png')} ></Image>
+            <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_90px.png')} ></Image>
           </TouchableOpacity>
         </View>
 
