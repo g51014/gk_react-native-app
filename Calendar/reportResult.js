@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  TextInput,
 } from 'react-native';
 import DatePicker from './datePicker';
 import Style from './style';
@@ -23,17 +24,14 @@ export default class ReportResult extends Component {
     var place = this.props.navigation.state.params.place;
     var title = this.props.navigation.state.params.title;
     this.GetSelectOption = this.GetSelectOption.bind(this);
+    this.SetOptionContent = this.SetOptionContent.bind(this);
     this.state = {
+      optionTitle:['盤點','退貨','轉貨','簽約','寄單','收款','提報','陳列','轉銷','活動','教學','其他'],
       selectOption:[], //驗證是否已選
       //行程資訊
       info:{type:type,time:time,remind:true,title:title,place:place,option:option},
       edit:false,
     };
-  }
-  ToHome()
-  {
-    //回主選單
-    console.warn('home');
   }
 
   Cancel()
@@ -41,6 +39,19 @@ export default class ReportResult extends Component {
     this.props.navigation.navigate('Calendar');
     console.warn('cancel');
     //回到月曆介面
+  }
+
+  //提交更新行程資料
+  Confirm()
+  {
+    //post data
+
+  }
+
+  //更新option content
+  SetOptionContent(optionId,content)
+  {
+    console.warn(optionId+content);
   }
 
   //回傳optionMenu元件已選擇的選項
@@ -73,6 +84,36 @@ export default class ReportResult extends Component {
     });
 
   render() {
+    var cards=[];
+    for(var i=0;i<Object.getOwnPropertyNames(this.state.info.option).length;i++)
+    {
+      var num = 'option'+(i+1);
+      var color;
+      if(i == 0 || i == 1 || i == 2) color = '#d94600';
+      else if (i == 3 || i==4||i==5) color = '#01b468';
+      else if (i == 6 || i==7 || i==8 || i==9 || i==10 ) color = '#5599FF';
+      else color = '#CC6600';
+      if(this.state.info.option[num].enable)
+      {
+        cards.push(
+          <View key={i} style={[{borderWidth:0.5,backgroundColor:'#fcfcfc',borderColor:color,padding:12,marginBottom:10,marginTop:10,marginLeft:25,marginRight:25}]}>
+            <Text style={[Style.font_option,{fontSize:25,textAlign:'center',color:color}]}>{this.state.optionTitle[i]}</Text>
+            <TextInput
+             onEndEditing={event => {console.warn(i);}}
+             placeholderTextColor='#272727'
+             style={[Style.font_option,{textAlign:'center',color:'#272727'}]}
+             placeholder='請輸入敘述'
+             multiline={true}
+             value={this.state.info.option[num].content}/>
+            <TouchableOpacity style={{flex:1}}>
+              <View style={[{borderWidth:0.5,backgroundColor:color,borderColor:'#adadad',marginBottom:10,marginTop:10,marginLeft:70,marginRight:70}]}>
+                  <Text style={[Style.font_option,{textAlign:'center',color:'white'}]}>上傳圖片</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        );
+      }
+    }
     return (
       <ScrollView style={[Style.column,Style.container]}>
         <View style={[{padding:13}]}>
@@ -86,18 +127,15 @@ export default class ReportResult extends Component {
           //12小項選單
           <OptionMenu callback={this.GetSelectOption} cancel={false} mode={'custom'} optionInfo={this.state.info.option}/>
           //回報區
-          <View style={[Style.view_border,{marginTop:10,padding:5}]}>
-            <Text style={[Style.font_option,{textAlign:'center'}]}>盤點</Text>
-            <View style={Style.view_border}></View>
-          </View>
+          {cards}
         </View>
         //icon區
-        <View style={[,Style.footer,Style.row]}>
+        <View style={[Style.footer,Style.row,{}]}>
           <TouchableOpacity onPress={this.Cancel.bind(this)}>
             <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_cancel_90px.png')} ></Image>
           </TouchableOpacity>
           <View style={[,{flex:1}]}></View>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={this.Confirm.bind(this)}>
             <Image resizeMode='center' style={[,{flex:1}]} source={require('./img/icon_check_90px.png')} ></Image>
           </TouchableOpacity>
         </View>

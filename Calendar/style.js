@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   footer:{
     padding:10,
     justifyContent:'center',
-    marginTop:30,
+    marginTop:0,
   }
 });
 
