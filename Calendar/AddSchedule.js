@@ -40,7 +40,8 @@ export default class AddScreen extends Component {
     this.Cancel = this.Cancel.bind(this);
     this.ToCustomerMenu = this.ToCustomerMenu.bind(this);
     this.state = {
-      type:['工作重點','會議','內部作業','內部教育訓練','外部作業','JoinCall','待辦事項','外部受訓','空區作業','活動/講座/團課','請假'],
+      //type:['工作重點','會議','內部作業','內部教育訓練','外部作業','JoinCall','外部受訓','空區作業','活動/講座/團課','請假'],
+      type:[4,0,1,1,7,5,8,6,3,2],
       typeImg:[require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),require('./img/type_3.png'),],
       onColor:'#009100',
       offColor:'black',
@@ -48,7 +49,7 @@ export default class AddScreen extends Component {
       customerMenuDisplay:'flex',
       selectOption:[],
       //所選資訊
-      info:{type:'工作重點',selectDate:year+'-'+month+'-'+day,remind:true,title:null,place:null,option:option},
+      info:{type:4,selectDate:year+'-'+month+'-'+day,remind:true,title:null,place:null,option:option},
       edit:false,
     };
   }
@@ -60,7 +61,7 @@ export default class AddScreen extends Component {
     var editable = this.state.edit;
     var display = '';
     currentType--;
-    if(currentType<0) currentType = 10;
+    if(currentType<0) currentType = 9;
     info.type = this.state.type[currentType];
     if(currentType == 0)
     {
@@ -82,7 +83,7 @@ export default class AddScreen extends Component {
     var editable = this.state.edit;
     var display = '';
     currentType++;
-    if(currentType>10) currentType = 0;
+    if(currentType>9) currentType = 0;
     info.type = this.state.type[currentType];
     if(currentType == 0)
     {

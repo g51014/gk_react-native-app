@@ -41,7 +41,6 @@ export default class CalendarTest extends Component {
   {
     this.props.navigation.navigate('ReportResult',{time:'2018-07-01',
     type:'會議',
-    place:'公司',
     title:'內部會議',
     option:{
       option1:{enable:true,content:'測試用資料'},

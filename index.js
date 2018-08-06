@@ -4,4 +4,4 @@ import AddScreen from './Calendar/AddSchedule';
 import Nav from './navigator';
 import Test from './test';
 
-AppRegistry.registerComponent('myapp3', () => Nav);
+AppRegistry.registerComponent('myapp3', () => Test);
