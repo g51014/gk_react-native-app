@@ -1,5 +1,5 @@
 /* @flow */
-
+//新增行程時小項卡片
 import React, { Component } from 'react';
 import {
   View,

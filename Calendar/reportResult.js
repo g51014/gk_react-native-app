@@ -11,17 +11,17 @@ import {
 import DatePicker from './datePicker';
 import Style from './style';
 import OptionMenu from './option';
-import ContentCard from './contentCard';
+import CustomInput from './customInput';
 
 export default class ReportResult extends Component {
 
   constructor(props)
   {
     super(props);
+    var key = this.props.navigation.state.params.key;
     var time = this.props.navigation.state.params.time;
     var option = this.props.navigation.state.params.option;
     var type = this.props.navigation.state.params.type;
-    var place = this.props.navigation.state.params.place;
     var title = this.props.navigation.state.params.title;
     this.GetSelectOption = this.GetSelectOption.bind(this);
     this.SetOptionContent = this.SetOptionContent.bind(this);
@@ -29,8 +29,9 @@ export default class ReportResult extends Component {
       optionTitle:['盤點','退貨','轉貨','簽約','寄單','收款','提報','陳列','轉銷','活動','教學','其他'],
       selectOption:[], //驗證是否已選
       //行程資訊
-      info:{type:type,time:time,remind:true,title:title,place:place,option:option},
+      info:{type:type,time:time,remind:true,title:title,option:option,key:key},
       edit:false,
+      text:'', //目前修改小項的內容
     };
   }
 
@@ -45,13 +46,17 @@ export default class ReportResult extends Component {
   Confirm()
   {
     //post data
-
+    console.warn(this.state.info);
+    // this.props.navigation.navigate('Calendar');
   }
 
   //更新option content
   SetOptionContent(optionId,content)
   {
-    console.warn(optionId+content);
+    var info = this.state.info;
+    var num = 'option'+(optionId+1);
+    info.option[num].content = content;
+    this.setState({info:info});
   }
 
   //回傳optionMenu元件已選擇的選項
@@ -98,13 +103,13 @@ export default class ReportResult extends Component {
         cards.push(
           <View key={i} style={[{borderWidth:0.5,backgroundColor:'#fcfcfc',borderColor:color,padding:12,marginBottom:10,marginTop:10,marginLeft:25,marginRight:25}]}>
             <Text style={[Style.font_option,{fontSize:25,textAlign:'center',color:color}]}>{this.state.optionTitle[i]}</Text>
-            <TextInput
-             onEndEditing={event => {console.warn(i);}}
-             placeholderTextColor='#272727'
-             style={[Style.font_option,{textAlign:'center',color:'#272727'}]}
-             placeholder='請輸入敘述'
-             multiline={true}
-             value={this.state.info.option[num].content}/>
+            <CustomInput
+            value={this.state.info.option[num].content}
+            id={i}
+            callback={this.SetOptionContent}
+            multiline={true}
+            placeholder={'請輸入敘述'}
+            />
             <TouchableOpacity style={{flex:1}}>
               <View style={[{borderWidth:0.5,backgroundColor:color,borderColor:'#adadad',marginBottom:10,marginTop:10,marginLeft:70,marginRight:70}]}>
                   <Text style={[Style.font_option,{textAlign:'center',color:'white'}]}>上傳圖片</Text>
@@ -122,7 +127,6 @@ export default class ReportResult extends Component {
             <Text style={[Style.font_option,{color:'#272727'}]}>名稱： {this.state.info.title}</Text>
             <Text style={[Style.font_option,{color:'#272727'}]}>類別： {this.state.info.type}</Text>
             <Text style={[Style.font_option,{color:'#272727'}]}>時間： {this.state.info.time}</Text>
-            <Text style={[Style.font_option,{color:'#272727'}]}>地點： {this.state.info.place}</Text>
           </View>
           //12小項選單
           <OptionMenu callback={this.GetSelectOption} cancel={false} mode={'custom'} optionInfo={this.state.info.option}/>

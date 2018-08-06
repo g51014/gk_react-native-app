@@ -44,7 +44,7 @@ export default class CalendarTest extends Component {
     place:'公司',
     title:'內部會議',
     option:{
-      option1:{enable:true,content:'66556123123132132461354136655612312313213246135413eujjdlwheowpj6666556123123132132461354136655612312313213246135413eujjdlwheowpj66fjewifj'},
+      option1:{enable:true,content:'測試用資料'},
       option2:{enable:true,content:'testtest'},
       option3:{enable:false,content:null},
       option4:{enable:false,content:null},

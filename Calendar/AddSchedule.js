@@ -144,17 +144,17 @@ export default class AddScreen extends Component {
       else info.color = '#01b468';
       this.setState({info:info});
       //post到後端
-      if(type == 0)
+      if(type == 0) //工作重點
       {
         console.warn(this.state.info.option);
         console.warn(this.state.customer);
       }
-      else {
+      else { //其他
         console.warn(this.state.info);
       }
     }
     //送出資料回到月曆介面
-
+    // this.props.navigation.navigate('Calendar');
   }
 
 //回傳contentcards元件的內容
@@ -285,8 +285,6 @@ export default class AddScreen extends Component {
             <Text style={[Style.font_option,{flex:1}]}>日期：</Text>
             <DatePicker callback = {this.GetSelectDate} date={'2017-06-30'}/>
           </View>
-          //地點
-          <ContentCard edit={true} callback={this.GetInfo} title={'地點'} placeholder={'選填'}/>
           //選項內容
           {option}
           //提醒選單
