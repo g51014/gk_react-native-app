@@ -6,5 +6,6 @@ react-native-datepicker,
 react-native-elements,
 react-native-dropdown-menu,
 react-native-material-dropdown,
-react-native-image-picker
+react-native-image-picker,
+react-native-navigator
 
