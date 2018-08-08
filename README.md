@@ -7,5 +7,6 @@ react-native-elements,
 react-native-dropdown-menu,
 react-native-material-dropdown,
 react-native-image-picker,
+react-native-image-crop-picker,
 react-native-navigator
 
