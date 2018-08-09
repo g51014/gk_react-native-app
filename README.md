@@ -1,6 +1,8 @@
 # gk_react-native-app
-宜果國際股份有限公司-業務好助手APP   
+宜果國際股份有限公司-業務好助手APP  
+  
 擴充元件：  
+  
 react-native-calendars,  
 react-native-datepicker,  
 react-native-elements,  
@@ -12,6 +14,7 @@ react-native-navigator
   
   
 功能：  
+  
 1.行程管理  
   
 ![image](https://github.com/g51014/gk_react-native-app/blob/master/document/AddSchedule.png)  
