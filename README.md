@@ -9,4 +9,10 @@ react-native-material-dropdown,
 react-native-image-picker,  
 react-native-image-crop-picker,  
 react-native-navigator  
-功能：  1.行程管理  2.依條件查找客戶資料  3.上傳圖片  4.回報行程結果  
+  
+  
+功能：  
+1.行程管理  
+2.依條件查找客戶資料  
+3.上傳圖片  
+4.回報行程結果  
