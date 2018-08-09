@@ -18,6 +18,9 @@ react-native-navigator
 功能：  
 ---
   
+Demo影片  
+https://github.com/g51014/gk_react-native-app/blob/master/document/gk_react-native-app_Calendar_Demo.mov
+  
 1.行程管理  
   
 ![image](https://github.com/g51014/gk_react-native-app/blob/master/document/AddSchedule.png)  
