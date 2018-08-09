@@ -126,6 +126,7 @@ export default class AddScreen extends Component {
           info.title = '拜訪'+data.name;
           this.setState({customer:data,info:info});
         },
+        //傳輸客戶資料
       });
     }
   }

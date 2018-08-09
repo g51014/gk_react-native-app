@@ -33,12 +33,14 @@ export default class CalendarTest extends Component {
 
   ToAddSchedule()
   {
+    //傳輸客戶資料
     this.props.navigation.navigate('AddSchedule');
   }
 
 //前往單筆行程
   ToCards(key)
   {
+    //傳輸單筆紀錄資料
     this.props.navigation.navigate('ReportResult',{time:'2018-07-01',
     type:'會議',
     title:'內部會議',
