@@ -28,9 +28,11 @@ export default class AddScreen extends Component {
     for(var i=0;i<12;i++)
     {
       var optionNum = 'option' + (i+1);
+      var photo = {uri:[],name:[]};
       option[optionNum].content = '';
       option[optionNum].enable = false;
       option[optionNum].title = '';
+      option[optionNum].photo = photo;
     }
     this.EnableRemind = this.EnableRemind.bind(this);
     this.DisableRemind = this.DisableRemind.bind(this);

@@ -43,18 +43,18 @@ export default class CalendarTest extends Component {
     type:'會議',
     title:'內部會議',
     option:{
-      option1:{enable:true,content:'測試用資料'},
-      option2:{enable:true,content:'testtest'},
-      option3:{enable:false,content:null},
-      option4:{enable:false,content:null},
-      option5:{enable:false,content:null},
-      option6:{enable:false,content:null},
-      option7:{enable:false,content:null},
-      option8:{enable:false,content:null},
-      option9:{enable:false,content:null},
-      option10:{enable:false,content:null},
-      option11:{enable:false,content:null},
-      option12:{enable:false,content:null}}})
+      option1:{enable:true,content:'測試用資料',photo:{uri:[],name:[]}},
+      option2:{enable:true,content:'testtest',photo:{uri:[],name:[]}},
+      option3:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option4:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option5:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option6:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option7:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option8:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option9:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option10:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option11:{enable:false,content:null,photo:{uri:[],name:[]}},
+      option12:{enable:false,content:null,photo:{uri:[],name:[]}}}})
   }
 
 //點選單日

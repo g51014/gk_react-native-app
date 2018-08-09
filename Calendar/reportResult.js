@@ -12,6 +12,8 @@ import DatePicker from './datePicker';
 import Style from './style';
 import OptionMenu from './option';
 import CustomInput from './customInput';
+import ImagePicker from 'react-native-image-picker';
+import ImageMultiplePicker from 'react-native-image-crop-picker';
 
 export default class ReportResult extends Component {
 
@@ -46,7 +48,7 @@ export default class ReportResult extends Component {
   Confirm()
   {
     //post data
-    console.warn(this.state.info);
+    console.log(this.state.info.option.option1.photo.name);
     // this.props.navigation.navigate('Calendar');
   }
 
@@ -76,6 +78,98 @@ export default class ReportResult extends Component {
       }
     }
 
+    //選擇圖片
+    ChoosePic(i) {
+      var options = {
+        cancelButtonTitle:'取消',
+        takePhotoButtonTitle:'拍照',
+        chooseFromLibraryButtonTitle:null,
+        customButtons: [
+          {name: 'hangge', title: '相簿圖片'},
+        ],
+        storageOptions: {
+          skipBackup: true,
+          path: 'images'
+        }
+      };
+        ImagePicker.showImagePicker(options, (response) => {
+        // console.warn('Response = ', response);
+        if (response.didCancel) {
+          console.log('用户取消了选择！');
+        }
+        else if (response.error) {
+          alert("錯誤：" + response.error);
+        }
+        //選擇多張圖片
+        else if (response.customButton) {
+          this.ChooseMultiplePic(i);
+        }
+        //拍照
+        else {
+          this.SetOptionPhoto(response,i);
+        }
+      });
+     }
+
+     //選擇多個圖片
+     ChooseMultiplePic(optionId)
+     {
+       ImageMultiplePicker.openPicker({
+          multiple: true,
+          includeBase64: true
+        })
+        .then(response => {
+          this.SetOptionPhoto(response,optionId);
+        });
+     }
+
+     //設定選項圖片資料
+     SetOptionPhoto(photoData,optionId)
+     {
+       var num = 'option'+(optionId+1);
+       var info = this.state.info;
+       var uri = this.state.info.option[num].photo.uri; //base64
+       var name = this.state.info.option[num].photo.name; //檔名編號
+       var amount = this.state.info.option[num].photo.name.length; //當前圖片數量
+       //相簿選取data為陣列
+       if(Array.isArray(photoData))
+       {
+         for(var i=0;i<photoData.length;i++)
+         {
+            uri.push(photoData[i].data);
+            name.push(amount+i);
+         }
+       }
+       //相機拍照data只有一個
+       else
+       {
+         uri.push(photoData.data);
+         name.push(amount);
+       }
+       console.warn(uri);
+       console.warn(name);
+       info.option[num].photo.uri = uri;
+       info.option[num].photo.name = name;
+       // console.warn(info.option['option'+(optionId+1)].photo.name);
+       this.setState({
+         info:info,
+       });
+     }
+
+     //移除圖片
+     RemoveOptionPhoto(photoName,num)
+     {
+       var info = this.state.info;
+       var uri = this.state.info.option[num].photo.uri;
+       var name = this.state.info.option[num].photo.name;
+       var index = name.indexOf(photoName); //點選圖片在當前選項圖片序列中的位置
+       name.pop(); //編號-1
+       uri.splice(index,1); //移除index的圖片 
+       info.uri = uri;
+       info.name = name;
+       this.setState({info:info});
+     }
+
   //設置頂部導航欄的內容
     static navigationOptions = ({navigation, screenProps}) => ({
         //左側標題
@@ -100,6 +194,20 @@ export default class ReportResult extends Component {
       else color = '#CC6600';
       if(this.state.info.option[num].enable)
       {
+        var image = [];
+        //有圖片的話鑲入圖片
+        if(this.state.info.option[num].photo.uri.length>0)
+        {
+          for(var j=0;j<this.state.info.option[num].photo.uri.length;j++)
+          {
+            image.push(
+              //Image的source可使用uri屬性直接放連結或是使用require()後的連結
+              <TouchableOpacity key={j} onLongPress={this.RemoveOptionPhoto.bind(this,j,num)}>
+                <Image style={[{height:198,width:300,alignSelf:'center',margin:10,borderWidth:0.5,backgroundColor:'#fcfcfc',borderColor:'#adadad'}]} source={{uri: 'data:image/jpeg;base64,' + this.state.info.option[num].photo.uri[j]}}/>
+              </TouchableOpacity>
+            );
+          }
+        }
         cards.push(
           <View key={i} style={[{borderWidth:0.5,backgroundColor:'#fcfcfc',borderColor:color,padding:12,marginBottom:10,marginTop:10,marginLeft:25,marginRight:25}]}>
             <Text style={[Style.font_option,{fontSize:25,textAlign:'center',color:color}]}>{this.state.optionTitle[i]}</Text>
@@ -110,9 +218,10 @@ export default class ReportResult extends Component {
             multiline={true}
             placeholder={'請輸入敘述'}
             />
-            <TouchableOpacity style={{flex:1}}>
+            {image}
+            <TouchableOpacity onPress={this.ChoosePic.bind(this,i)} style={{flex:1}}>
               <View style={[{borderWidth:0.5,backgroundColor:color,borderColor:'#adadad',marginBottom:10,marginTop:10,marginLeft:70,marginRight:70}]}>
-                  <Text style={[Style.font_option,{textAlign:'center',color:'white'}]}>上傳圖片</Text>
+                  <Text  style={[Style.font_option,{textAlign:'center',color:'white'}]}>上傳圖片</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -153,9 +262,3 @@ export default class ReportResult extends Component {
   ReportResult.defaultProps ={
 
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
