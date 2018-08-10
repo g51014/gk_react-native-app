@@ -13,6 +13,7 @@ import Calendar from './Calendar/Calendar';
 import AddSchedule from './Calendar/AddSchedule';
 import CustomerMenu from './Calendar/customerMenu';
 import ReportResult from './Calendar/reportResult';
+// import SearchScreen from './Calendar/SearchScreen';
 
 export default Navigator = StackNavigator(
   {
@@ -28,6 +29,9 @@ export default Navigator = StackNavigator(
     ReportResult:{
       screen:ReportResult
     },
+    // SearchScreen:{
+    //   screen:SearchScreen
+    // },
   }
 );
 

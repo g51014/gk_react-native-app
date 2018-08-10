@@ -38,7 +38,7 @@ export default class CalendarTest extends Component {
   }
 
 //前往單筆行程
-  ToCards(key)
+  ToCards(i)
   {
     //傳輸單筆紀錄資料
     this.props.navigation.navigate('ReportResult',{time:'2018-07-01',
@@ -56,7 +56,9 @@ export default class CalendarTest extends Component {
       option9:{enable:false,content:null,photo:{uri:[],name:[]}},
       option10:{enable:false,content:null,photo:{uri:[],name:[]}},
       option11:{enable:false,content:null,photo:{uri:[],name:[]}},
-      option12:{enable:false,content:null,photo:{uri:[],name:[]}}}})
+      option12:{enable:false,content:null,photo:{uri:[],name:[]}}},
+    key:i
+    });
   }
 
 //點選單日
@@ -76,7 +78,7 @@ export default class CalendarTest extends Component {
     this.GetAllActivityDate(this.CombineYMD(data.year,data.month,data.day));
   }
 
-//丟入date索取當日的行程資料,post date到後端回傳
+//丟入完整date索取當日的行程資料,post date到後端回傳
   GetData(date){
     var url = 'http://localhost:8081/Calendar/data/data.json';
     if(date == '2018-07-01') url ='http://localhost:8081/Calendar/data/data_0701.json';
@@ -92,12 +94,12 @@ export default class CalendarTest extends Component {
       });
   }
 
-//獲得丟入date該月份所有有行程的日子,post date到後端回傳整月行程進行資料重組
+//獲得丟入date該月份所有有行程的日子,post date.substring(0,7)到後端回傳整月行程進行資料重組
   GetAllActivityDate(date)
   {
     // console.warn(date);
     var url = 'http://localhost:8081/Calendar/data/main_data.json';
-    var list = [];
+    var list = []; //該月有行程的日期
     // if(date.substring(0,7) == '2018-07') url ='http://localhost:8081/data/main_data_7.json';
     fetch(url)
       .then((response) => response.json())

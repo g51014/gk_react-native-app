@@ -36,6 +36,7 @@ export default class MyComponent extends Component {
     };
   }
 
+  //取得客戶清單
   GetCustomerList()
   {
     var info;
